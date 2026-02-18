@@ -21,7 +21,7 @@ export default function SigmaExample({...rest}) {
       const {default: Sigma} = await import(SIGMA_CDN_URL);
 
       const themes = [
-        {id: "theme1", label: "Theme 1", count: 10},
+        {id: "theme1", label: "Water Systems", count: 10},
         {id: "theme2", label: "Theme 2", count: 20},
         {id: "theme3", label: "Theme 3", count: 30},
         {id: "theme4", label: "Theme 4", count: 40},
