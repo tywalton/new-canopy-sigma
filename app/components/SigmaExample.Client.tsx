@@ -29,9 +29,17 @@ export default function SigmaExample({...rest}) {
       ];
 
       const graph = new Graph();
+      
 themes.forEach((theme, i) => {
-  const next = themes[(i + 1) % themes.length];
-  graph.addEdge(theme.id, next.id, { size: 2, color: "#a5b4fc" });
+  if (!graph.hasNode(theme.id)) {
+    graph.addNode(theme.id, {
+      label: theme.label,
+      size: Math.sqrt(theme.count) * 2,
+      color: "#6366f1",
+      x: Math.cos((2 * Math.PI * i) / themes.length),
+      y: Math.sin((2 * Math.PI * i) / themes.length),
+    });
+  }
 });
 
       graph.addEdge("theme1", "theme2", {
