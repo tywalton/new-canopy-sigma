@@ -22,10 +22,10 @@ export default function SigmaExample({...rest}) {
 
       const themes = [
         {id: "theme1", label: "Water Systems", count: 10},
-        {id: "theme2", label: "Theme 2", count: 20},
-        {id: "theme3", label: "Theme 3", count: 30},
-        {id: "theme4", label: "Theme 4", count: 40},
-        {id: "theme5", label: "Theme 5", count: 50},
+        {id: "theme2", label: "Environmental Impacts on Wildlife and Natural Areas", count: 30},
+        {id: "theme3", label: "Energy Systems and Power Infrastructure", count: 20},
+        {id: "theme4", label: "Transportation Infrastructure and Mobility", count: 40},
+        {id: "theme5", label: "Urban Development, Renewal, and Demolition", count: 40},
       ];
 
       const graph = new Graph();
