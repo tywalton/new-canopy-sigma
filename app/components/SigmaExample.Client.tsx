@@ -42,10 +42,6 @@ themes.forEach((theme, i) => {
   }
 });
 
-      graph.addEdge("theme1", "theme2", {
-        size: 5,
-        color: "purple",
-      });
 
       renderer = new Sigma(graph, containerRef.current, {
         renderEdgeLabels: false,
