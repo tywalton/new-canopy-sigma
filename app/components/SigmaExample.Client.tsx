@@ -25,13 +25,20 @@ export default function SigmaExample({...rest}) {
       ];
 
       const graph = new Graph();
+const themeColors = {
+  theme1: "#0ea5e9", // water
+  theme2: "#22c55e", // wildlife
+  theme3: "#f97316", // energy
+  theme4: "#6366f1", // transport
+  theme5: "#e11d48", // urban
+};
       
 themes.forEach((theme, i) => {
   if (!graph.hasNode(theme.id)) {
     graph.addNode(theme.id, {
       label: theme.label,
       size: Math.sqrt(theme.count) * 2,
-      color: "#6366f1",
+      color: themeColors[theme.id], // ← key line
       x: Math.cos((2 * Math.PI * i) / themes.length),
       y: Math.sin((2 * Math.PI * i) / themes.length),
     });
