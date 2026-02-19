@@ -1,7 +1,3 @@
-/**
- * This is a minimal example of Sigma. You can use it as a base to write new
- * examples, or reproducible test cases for new issues, for instance.
- */
 
 import React, {useEffect, useRef} from "react";
 
