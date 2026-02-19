@@ -25,6 +25,8 @@ export default function SigmaExample({...rest}) {
       ];
 
       const graph = new Graph();
+
+// define colors 
 const themeColors = {
   theme1: "#0ea5e9", // water
   theme2: "#22c55e", // wildlife
@@ -32,7 +34,8 @@ const themeColors = {
   theme4: "#6366f1", // transport
   theme5: "#e11d48", // urban
 };
-      
+
+// add nodes      
 themes.forEach((theme, i) => {
   if (!graph.hasNode(theme.id)) {
     graph.addNode(theme.id, {
@@ -45,7 +48,17 @@ themes.forEach((theme, i) => {
   }
 });
 
-
+// add edges 
+themes.forEach((source, i) => {
+  themes.slice(i + 1).forEach((target) => {
+    graph.addEdge(source.id, target.id, {
+      size: 1,
+      color: "#d1d5db",
+    });
+  });
+});
+      
+// create render 
       renderer = new Sigma(graph, containerRef.current, {
         renderEdgeLabels: false,
       });
