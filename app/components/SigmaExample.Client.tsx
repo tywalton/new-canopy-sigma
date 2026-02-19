@@ -49,13 +49,15 @@ themes.forEach((theme, i) => {
 });
 
 // add edges 
-themes.forEach((source, i) => {
-  themes.slice(i + 1).forEach((target) => {
-    graph.addEdge(source.id, target.id, {
+const centerTheme = "theme3";
+
+themes.forEach((theme) => {
+  if (theme.id !== centerTheme) {
+    graph.addEdge(centerTheme, theme.id, {
       size: 1,
       color: "#d1d5db",
     });
-  });
+  }
 });
       
 // create render 
