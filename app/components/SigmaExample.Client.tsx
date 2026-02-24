@@ -17,7 +17,7 @@ export default function SigmaExample({...rest}) {
       const {default: Sigma} = await import(SIGMA_CDN_URL);
 
       const themes = [
-        {id: "theme1", label: "Water Systems", count: 10},
+        {id: "theme1", label: "Water Systems", count: 100},
         {id: "theme2", label: "Wildlife and Natural Areas", count: 20},
         {id: "theme3", label: "Energy Systems", count: 30},
         {id: "theme4", label: "Transportation Infrastructure", count: 40},
@@ -59,6 +59,7 @@ themes.forEach((theme, i) => {
   }
 });
 
+// randomize node location 
 graph.forEachNode((node) => {
   graph.setNodeAttribute(node, "x", Math.random());
   graph.setNodeAttribute(node, "y", Math.random());
