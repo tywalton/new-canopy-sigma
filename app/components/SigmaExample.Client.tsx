@@ -59,6 +59,11 @@ themes.forEach((theme, i) => {
   }
 });
 
+graph.forEachNode((node) => {
+  graph.setNodeAttribute(node, "x", Math.random());
+  graph.setNodeAttribute(node, "y", Math.random());
+});
+
 // add edges 
 themes.forEach((themeA, i) => {
   themes.forEach((themeB, j) => {
