@@ -18,15 +18,15 @@ export default function SigmaExample({...rest}) {
 
       const themes = [
         {id: "theme1", label: "Water Systems", count: 100},
-        {id: "theme2", label: "Wildlife and Natural Areas", count: 20},
-        {id: "theme3", label: "Energy Systems", count: 30},
-        {id: "theme4", label: "Transportation Infrastructure", count: 40},
-        {id: "theme5", label: "Urban Development", count: 50},
-        {id: "theme6", label: "Climate and Weather Modification", count: 30},
-        {id: "theme7", label: "Industrial Production and Materials", count: 30},
-        {id: "theme8", label: "Place Based Development Conflicts", count: 30},
-        {id: "theme9", label: "Governance and Institutional Control", count: 50},
-        {id: "theme10", label: "Indigenous Narratives and Sovereignty", count: 30}
+        {id: "theme2", label: "Wildlife and Natural Areas", count: 120},
+        {id: "theme3", label: "Energy Systems", count: 130},
+        {id: "theme4", label: "Transportation Infrastructure", count: 140},
+        {id: "theme5", label: "Urban Development", count: 150},
+        {id: "theme6", label: "Climate and Weather Modification", count: 130},
+        {id: "theme7", label: "Industrial Production and Materials", count: 130},
+        {id: "theme8", label: "Place Based Development Conflicts", count: 130},
+        {id: "theme9", label: "Governance and Institutional Control", count: 150},
+        {id: "theme10", label: "Indigenous Narratives and Sovereignty", count: 130}
       ];
 
       const graph = new Graph();
