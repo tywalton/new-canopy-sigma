@@ -22,6 +22,11 @@ export default function SigmaExample({...rest}) {
         {id: "theme3", label: "Energy Systems", count: 30},
         {id: "theme4", label: "Transportation Infrastructure", count: 40},
         {id: "theme5", label: "Urban Development", count: 50},
+        {id: "theme6", label: "Climate and Weather Modification", count: 30},
+        {id: "theme7", label: "Industrial Production and Materials", count: 30},
+        {id: "theme8", label: "Place Based Development Conflicts", count: 30},
+        {id: "theme9", label: "Governance and Institutional Control", count: 50},
+        {id: "theme10", label: "Indigenous Narratives and Sovereignty", count: 30}
       ];
 
       const graph = new Graph();
@@ -33,6 +38,12 @@ const themeColors = {
   theme3: "#f97316", // energy
   theme4: "#6366f1", // transport
   theme5: "#e11d48", // urban
+
+  theme6: "#38bdf8",  // climate & weather (sky / atmosphere)
+  theme7: "#64748b",  // industrial production (steel / materials)
+  theme8: "#a16207",  // place-based conflicts (land / earth)
+  theme9: "#0f766e",  // governance (institutions / stability)
+  theme10: "#7c3aed", // Indigenous narratives & sovereignty (heritage / power)
 };
 
 // add nodes      
