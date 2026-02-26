@@ -46,20 +46,36 @@ const themeColors = {
   theme10: "#7c3aed", // Indigenous narratives & sovereignty (heritage / power)
 };
 
-// add nodes      
+const fixedPositions = {
+  theme1:  { x: -0.6, y:  0.4 },
+  theme2:  { x: -0.4, y:  0.7 },
+  theme6:  { x: -0.2, y:  0.4 },
+
+  theme3:  { x:  0.0, y:  0.1 },
+  theme4:  { x:  0.3, y:  0.3 },
+  theme7:  { x:  0.3, y: -0.1 },
+
+  theme5:  { x:  0.6, y:  0.2 },
+  theme9:  { x:  0.6, y: -0.2 },
+  theme8:  { x:  0.2, y: -0.4 },
+
+  theme10: { x: -0.1, y: -0.7 },
+};
+
+// add nodes  
 function seededRandom(seed) {
   let x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
       
-themes.forEach((theme, i) => {
+themes.forEach((theme) => {
   if (!graph.hasNode(theme.id)) {
     graph.addNode(theme.id, {
       label: theme.label,
       size: Math.sqrt(theme.count) * 2,
       color: themeColors[theme.id],
-      x: seededRandom(i + 1) * 2 - 1,
-      y: seededRandom(i + 100) * 2 - 1,
+      x: fixedPositions[theme.id].x,
+      y: fixedPositions[theme.id].y,
     });
   }
 });
