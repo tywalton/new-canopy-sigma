@@ -47,23 +47,23 @@ const themeColors = {
 };
 
 // add nodes      
+function seededRandom(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+      
 themes.forEach((theme, i) => {
   if (!graph.hasNode(theme.id)) {
     graph.addNode(theme.id, {
       label: theme.label,
       size: Math.sqrt(theme.count) * 2,
-      color: themeColors[theme.id], // ← key line
-      x: Math.cos((2 * Math.PI * i) / themes.length),
-      y: Math.sin((2 * Math.PI * i) / themes.length),
+      color: themeColors[theme.id],
+      x: seededRandom(i + 1) * 2 - 1,
+      y: seededRandom(i + 100) * 2 - 1,
     });
   }
 });
 
-// randomize node location 
-graph.forEachNode((node) => {
-  graph.setNodeAttribute(node, "x", Math.random());
-  graph.setNodeAttribute(node, "y", Math.random());
-});
 
 // add edges 
 themes.forEach((themeA, i) => {
