@@ -69,7 +69,7 @@ themes.forEach((theme) => {
   if (!graph.hasNode(theme.id)) {
     graph.addNode(theme.id, {
       label: theme.label,
-      size: Math.sqrt(theme.count) * 2,
+      size: Math.sqrt(theme.count) * 2.8,
       color: themeColors[theme.id],
       x: fixedPositions[theme.id].x,
       y: fixedPositions[theme.id].y,
