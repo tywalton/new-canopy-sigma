@@ -94,14 +94,12 @@ themes.forEach((themeA, i) => {
 renderer = new Sigma(graph, containerRef.current, {
   renderEdgeLabels: false,
 
-  // 👇 label settings
-  labelRenderedSizeThreshold: 0,
+  labelRenderedSizeThreshold: -Infinity, // 👈 key line
   labelDensity: 1,
   labelGridCellSize: 0,
 
   defaultNodeLabelColor: "#ffffff",
-  defaultNodeLabelSize: 12,
-  defaultNodeLabelAlignment: "center",
+  defaultNodeLabelSize: 11,
 });
 };
     void run();
