@@ -69,7 +69,7 @@ themes.forEach((theme) => {
   if (!graph.hasNode(theme.id)) {
     graph.addNode(theme.id, {
       label: theme.label,
-      size: Math.sqrt(theme.count) * 2.8,
+      size: Math.sqrt(theme.count) * 2,
       color: themeColors[theme.id],
       x: fixedPositions[theme.id].x,
       y: fixedPositions[theme.id].y,
@@ -93,13 +93,6 @@ themes.forEach((themeA, i) => {
 // create render 
 renderer = new Sigma(graph, containerRef.current, {
   renderEdgeLabels: false,
-
-  labelRenderedSizeThreshold: -Infinity, // 👈 key line
-  labelDensity: 1,
-  labelGridCellSize: 0,
-
-  defaultNodeLabelColor: "#ffffff",
-  defaultNodeLabelSize: 11,
 });
 };
     void run();
