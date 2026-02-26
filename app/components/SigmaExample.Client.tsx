@@ -106,7 +106,7 @@ renderer = new Sigma(graph, containerRef.current, {
   defaultNodeLabelSize: 12,
   defaultNodeLabelAlignment: "center",
 });
-
+};
     void run();
 
     return () => {
