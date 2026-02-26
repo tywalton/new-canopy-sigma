@@ -59,7 +59,7 @@ const fixedPositions = {
   theme9:  { x:  0.6, y: -0.2 },
   theme8:  { x:  0.2, y: -0.4 },
 
-  theme10: { x: -0.3, y: -0.7 },
+  theme10: { x: -0.3, y: -0.5 },
 };
 
 // add nodes  
