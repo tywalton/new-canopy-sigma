@@ -94,10 +94,18 @@ themes.forEach((themeA, i) => {
 });
       
 // create render 
-      renderer = new Sigma(graph, containerRef.current, {
-        renderEdgeLabels: false,
-      });
-    };
+renderer = new Sigma(graph, containerRef.current, {
+  renderEdgeLabels: false,
+
+  // 👇 label settings
+  labelRenderedSizeThreshold: 0,
+  labelDensity: 1,
+  labelGridCellSize: 0,
+
+  defaultNodeLabelColor: "#ffffff",
+  defaultNodeLabelSize: 12,
+  defaultNodeLabelAlignment: "center",
+});
 
     void run();
 
