@@ -104,7 +104,7 @@ themes.forEach((themeA, i) => {
         });
 
         graph.addEdge("theme4", sub.id, {
-          color: "#c7d2fe",
+          color:"#6366f1",
           size: 1,
           hidden: true,
         });
