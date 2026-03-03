@@ -1,10 +1,9 @@
-
-import React, {useEffect, useRef} from "react";
+import React, { useEffect, useRef } from "react";
 
 const GRAPH_CDN_URL = "https://esm.sh/graphology@0.25.4?bundle";
 const SIGMA_CDN_URL = "https://esm.sh/sigma@3.0.0?bundle";
 
-export default function SigmaExample({...rest}) {
+export default function SigmaExample({ ...rest }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -13,39 +12,36 @@ export default function SigmaExample({...rest}) {
     let renderer;
 
     const run = async () => {
-      const {default: Graph} = await import(GRAPH_CDN_URL);
-      const {default: Sigma} = await import(SIGMA_CDN_URL);
+      const { default: Graph } = await import(GRAPH_CDN_URL);
+      const { default: Sigma } = await import(SIGMA_CDN_URL);
 
       const themes = [
-        {id: "theme1", label: "Water Systems", count: 100},
-        {id: "theme2", label: "Wildlife and Natural Areas", count: 120},
-        {id: "theme3", label: "Energy Systems", count: 130},
-        {id: "theme4", label: "Transportation Infrastructure", count: 140},
-        {id: "theme5", label: "Urban Development", count: 150},
-        {id: "theme6", label: "Climate and Weather Modification", count: 130},
-        {id: "theme7", label: "Industrial Production and Materials", count: 130},
-        {id: "theme8", label: "Place Based Development Conflicts", count: 130},
-        {id: "theme9", label: "Governance and Institutional Control", count: 150},
-        {id: "theme10", label: "Indigenous Narratives and Sovereignty", count: 130}
+        { id: "theme1", label: "Water Systems", count: 100 },
+        { id: "theme2", label: "Wildlife and Natural Areas", count: 120 },
+        { id: "theme3", label: "Energy Systems", count: 130 },
+        { id: "theme4", label: "Transportation Infrastructure", count: 140 },
+        { id: "theme5", label: "Urban Development", count: 150 },
+        { id: "theme6", label: "Climate and Weather Modification", count: 130 },
+        { id: "theme7", label: "Industrial Production and Materials", count: 130 },
+        { id: "theme8", label: "Place Based Development Conflicts", count: 130 },
+        { id: "theme9", label: "Governance and Institutional Control", count: 150 },
+        { id: "theme10", label: "Indigenous Narratives and Sovereignty", count: 130 },
       ];
 
-      const graph = new Graph();
+      const themeColors = {
+        theme1: "#0ea5e9",
+        theme2: "#22c55e",
+        theme3: "#f97316",
+        theme4: "#6366f1",
+        theme5: "#e11d48",
+        theme6: "#38bdf8",
+        theme7: "#64748b",
+        theme8: "#a16207",
+        theme9: "#0f766e",
+        theme10: "#7c3aed",
+      };
 
-// define colors 
-const themeColors = {
-  theme1: "#0ea5e9", 
-  theme2: "#22c55e", 
-  theme3: "#f97316", 
-  theme4: "#6366f1", 
-  theme5: "#e11d48", 
-  theme6: "#38bdf8",  
-  theme7: "#64748b",  
-  theme8: "#a16207", 
-  theme9: "#0f766e", 
-  theme10: "#7c3aed", 
-};
-
-const fixedPositions = {
+      const fixedPositions = {
         theme1: { x: -0.6, y: 0.4 },
         theme2: { x: -0.4, y: 0.7 },
         theme6: { x: -0.2, y: 0.4 },
@@ -56,35 +52,34 @@ const fixedPositions = {
         theme9: { x: 0.6, y: -0.2 },
         theme8: { x: 0.2, y: -0.4 },
         theme10: { x: -0.3, y: -0.5 },
-};
+      };
 
+      const graph = new Graph();
 
-// main nodes    
-themes.forEach((theme) => {
-  if (!graph.hasNode(theme.id)) {
-    graph.addNode(theme.id, {
-      label: theme.label,
-      size: Math.sqrt(theme.count) * 2,
-      color: themeColors[theme.id],
-      x: fixedPositions[theme.id].x,
-      y: fixedPositions[theme.id].y,
-    });
-  }
-});
-
-// add edges 
-themes.forEach((themeA, i) => {
-  themes.forEach((themeB, j) => {
-    if (i < j) {
-      graph.addEdge(themeA.id, themeB.id, {
-        size: 1,
-        color: "#d1d5db",
+      // Main nodes
+      themes.forEach((theme) => {
+        graph.addNode(theme.id, {
+          label: theme.label,
+          size: Math.sqrt(theme.count) * 2,
+          color: themeColors[theme.id],
+          x: fixedPositions[theme.id].x,
+          y: fixedPositions[theme.id].y,
+        });
       });
-    }
-  });
-});
 
-// transportation subnodes
+      // Edges between main nodes
+      themes.forEach((themeA, i) => {
+        themes.forEach((themeB, j) => {
+          if (i < j) {
+            graph.addEdge(themeA.id, themeB.id, {
+              size: 1,
+              color: "#d1d5db",
+            });
+          }
+        });
+      });
+
+      // Transportation subnodes
       const transportSubnodes = [
         { id: "theme4_road", label: "Road Transport" },
         { id: "theme4_rail", label: "Rail Transport" },
@@ -93,55 +88,67 @@ themes.forEach((themeA, i) => {
 
       const center = fixedPositions.theme4;
 
+      // Track subnode edge keys so we can hide/show them reliably
+      const subEdgeKeys = [];
+
       transportSubnodes.forEach((sub, i) => {
         graph.addNode(sub.id, {
           label: sub.label,
           size: 10,
           color: themeColors.theme4,
-          x: center.x + Math.cos((2 * Math.PI * i) / 3) * 0.08,
-          y: center.y + Math.sin((2 * Math.PI * i) / 3) * 0.08,
+          x: center.x + Math.cos((2 * Math.PI * i) / 3) * 0.12,
+          y: center.y + Math.sin((2 * Math.PI * i) / 3) * 0.12,
           hidden: true,
         });
 
-        graph.addEdge("theme4", sub.id, {
-          color:"#6366f1",
+        // FIX: store the edge key returned by addEdge
+        const edgeKey = graph.addEdge("theme4", sub.id, {
+          color: "#6366f1",
           size: 1,
           hidden: true,
         });
+        subEdgeKeys.push(edgeKey);
       });
-      
-// create render
+
       renderer = new Sigma(graph, containerRef.current, {
         renderEdgeLabels: false,
       });
 
-// click
-let transportExpanded = false;
+      let transportExpanded = false;
 
-renderer.on("clickNode", ({ node }) => {
-  if (node === "theme4" && !transportExpanded) {
-    // expand
-    transportExpanded = true;
+      renderer.on("clickNode", ({ node }) => {
+        // FIX: allow clicking subnodes to collapse too
+        const isTransportNode = node === "theme4" || transportSubnodes.some((s) => s.id === node);
 
-    graph.setNodeAttribute("theme4", "hidden", true);
+        if (!isTransportNode) return;
 
-    transportSubnodes.forEach((sub) => {
-      graph.setNodeAttribute(sub.id, "hidden", false);
-      graph.setEdgeAttribute("theme4", sub.id, "hidden", false);
-    });
-  } else if (transportExpanded) {
-    // collapse
-    transportExpanded = false;
+        if (!transportExpanded) {
+          // Expand
+          transportExpanded = true;
+          graph.setNodeAttribute("theme4", "hidden", true);
 
-    graph.setNodeAttribute("theme4", "hidden", false);
+          transportSubnodes.forEach((sub) => {
+            graph.setNodeAttribute(sub.id, "hidden", false);
+          });
+          // FIX: use stored edge keys instead of passing node pair
+          subEdgeKeys.forEach((key) => {
+            graph.setEdgeAttribute(key, "hidden", false);
+          });
+        } else {
+          // Collapse
+          transportExpanded = false;
+          graph.setNodeAttribute("theme4", "hidden", false);
 
-    transportSubnodes.forEach((sub) => {
-      graph.setNodeAttribute(sub.id, "hidden", true);
-      graph.setEdgeAttribute("theme4", sub.id, "hidden", true);
-    });
-
-  }
-});
+          transportSubnodes.forEach((sub) => {
+            graph.setNodeAttribute(sub.id, "hidden", true);
+          });
+          // FIX: use stored edge keys
+          subEdgeKeys.forEach((key) => {
+            graph.setEdgeAttribute(key, "hidden", true);
+          });
+        }
+      });
+    };
 
     void run();
 
@@ -150,7 +157,7 @@ renderer.on("clickNode", ({ node }) => {
     };
   }, []);
 
-return (
+  return (
     <div
       ref={containerRef}
       style={{ width: "100%", minHeight: "400px", height: "100%" }}
