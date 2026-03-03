@@ -30,8 +30,8 @@ const themes = [
 ];
 
 const fixedPositions = {
-  theme1:  { x: -0.8, y:  0.4 },
-  theme2:  { x: -0.4, y: -0.1 },
+  theme1:  { x: -0.4, y:  0.4 },
+  theme2:  { x: -0.8, y: -0.1 },
   theme6:  { x: -0.2, y:  0.4 },
   theme3:  { x:  0.0, y:  0.1 },
   theme4:  { x:  0.3, y:  0.3 },
