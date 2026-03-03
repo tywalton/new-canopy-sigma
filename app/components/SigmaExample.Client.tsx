@@ -253,7 +253,7 @@ export default function SigmaExample({ ...rest }) {
 
       renderer.getCamera().on("updated", () => {
         const camera = renderer.getCamera();
-        const { x: camX, y: camY, ratio } = camera.getState();
+        const { ratio } = camera.getState();
 
         const zoomedIn = ratio < EXPAND_ZOOM_RATIO;
 
@@ -262,14 +262,22 @@ export default function SigmaExample({ ...rest }) {
           return;
         }
 
-        // Find the closest main theme node to camera center
+        // Convert the viewport center to graph coordinates
+        const containerWidth = containerRef.current.offsetWidth;
+        const containerHeight = containerRef.current.offsetHeight;
+        const graphCenter = renderer.viewportToGraph({
+          x: containerWidth / 2,
+          y: containerHeight / 2,
+        });
+
+        // Find the closest main theme node to the graph-space center
         let closest = null;
         let closestDist = Infinity;
 
         themes.forEach((theme) => {
           const pos = fixedPositions[theme.id];
-          const dx = pos.x - camX;
-          const dy = pos.y - camY;
+          const dx = pos.x - graphCenter.x;
+          const dy = pos.y - graphCenter.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < closestDist) {
             closestDist = dist;
