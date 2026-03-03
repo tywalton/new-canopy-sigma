@@ -101,51 +101,71 @@ export default function SigmaExample({ ...rest }) {
           hidden: true,
         });
 
-        // FIX: store the edge key returned by addEdge
+        // Edge from theme4 parent to each subnode
         const edgeKey = graph.addEdge("theme4", sub.id, {
           color: "#6366f1",
           size: 1,
           hidden: true,
         });
         subEdgeKeys.push(edgeKey);
+
+        // Edges from each subnode to all other theme nodes (replacing theme4's connections)
+        themes.forEach((theme) => {
+          if (theme.id !== "theme4") {
+            const key = graph.addEdge(sub.id, theme.id, {
+              color: "#d1d5db",
+              size: 1,
+              hidden: true,
+            });
+            subEdgeKeys.push(key);
+          }
+        });
+      });
+
+      // Edges between subnodes themselves
+      transportSubnodes.forEach((subA, i) => {
+        transportSubnodes.forEach((subB, j) => {
+          if (i < j) {
+            const key = graph.addEdge(subA.id, subB.id, {
+              color: "#6366f1",
+              size: 1,
+              hidden: true,
+            });
+            subEdgeKeys.push(key);
+          }
+        });
       });
 
       renderer = new Sigma(graph, containerRef.current, {
         renderEdgeLabels: false,
       });
 
+      // Collect edges connecting theme4 to other theme nodes (not subnodes)
+      const theme4MainEdgeKeys = graph.edges("theme4").filter((key) => {
+        const target = graph.opposite("theme4", key);
+        return !transportSubnodes.some((s) => s.id === target);
+      });
+
       let transportExpanded = false;
 
       renderer.on("clickNode", ({ node }) => {
-        // FIX: allow clicking subnodes to collapse too
         const isTransportNode = node === "theme4" || transportSubnodes.some((s) => s.id === node);
-
         if (!isTransportNode) return;
 
         if (!transportExpanded) {
-          // Expand
+          // Expand: hide parent node + its main edges, show subnodes + sub edges
           transportExpanded = true;
           graph.setNodeAttribute("theme4", "hidden", true);
-
-          transportSubnodes.forEach((sub) => {
-            graph.setNodeAttribute(sub.id, "hidden", false);
-          });
-          // FIX: use stored edge keys instead of passing node pair
-          subEdgeKeys.forEach((key) => {
-            graph.setEdgeAttribute(key, "hidden", false);
-          });
+          theme4MainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
+          transportSubnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", false));
+          subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
         } else {
-          // Collapse
+          // Collapse: restore parent node + its main edges, hide subnodes + sub edges
           transportExpanded = false;
           graph.setNodeAttribute("theme4", "hidden", false);
-
-          transportSubnodes.forEach((sub) => {
-            graph.setNodeAttribute(sub.id, "hidden", true);
-          });
-          // FIX: use stored edge keys
-          subEdgeKeys.forEach((key) => {
-            graph.setEdgeAttribute(key, "hidden", true);
-          });
+          theme4MainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
+          transportSubnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", true));
+          subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
         }
       });
     };
