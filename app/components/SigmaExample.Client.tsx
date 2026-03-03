@@ -116,7 +116,7 @@ themes.forEach((themeA, i) => {
       });
 
       // zoom toggle
-      const ZOOM_THRESHOLD = 1.6;
+      const ZOOM_THRESHOLD = 1.2;
 
       renderer.on("cameraUpdated", ({ camera }) => {
         const zoom = camera.getState().ratio;
