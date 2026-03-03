@@ -115,23 +115,33 @@ themes.forEach((themeA, i) => {
         renderEdgeLabels: false,
       });
 
-      // zoom toggle
-      const ZOOM_THRESHOLD = 1.2;
+// click
+let transportExpanded = false;
 
-const camera = renderer.getCamera();
+renderer.on("clickNode", ({ node }) => {
+  if (node === "theme4" && !transportExpanded) {
+    // expand
+    transportExpanded = true;
 
-camera.on("updated", () => {
-  const zoom = camera.getState().ratio;
-  const expanded = zoom > ZOOM_THRESHOLD;
+    graph.setNodeAttribute("theme4", "hidden", true);
 
-  graph.setNodeAttribute("theme4", "hidden", expanded);
+    transportSubnodes.forEach((sub) => {
+      graph.setNodeAttribute(sub.id, "hidden", false);
+      graph.setEdgeAttribute("theme4", sub.id, "hidden", false);
+    });
+  } else if (transportExpanded) {
+    // collapse
+    transportExpanded = false;
 
-  transportSubnodes.forEach((sub) => {
-    graph.setNodeAttribute(sub.id, "hidden", !expanded);
-    graph.setEdgeAttribute("theme4", sub.id, "hidden", !expanded);
-  });
+    graph.setNodeAttribute("theme4", "hidden", false);
+
+    transportSubnodes.forEach((sub) => {
+      graph.setNodeAttribute(sub.id, "hidden", true);
+      graph.setEdgeAttribute("theme4", sub.id, "hidden", true);
+    });
+      renderer.refresh();
+  }
 });
-    };
 
     void run();
 
