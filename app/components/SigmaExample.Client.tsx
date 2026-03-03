@@ -118,17 +118,19 @@ themes.forEach((themeA, i) => {
       // zoom toggle
       const ZOOM_THRESHOLD = 1.2;
 
-      renderer.on("cameraUpdated", ({ camera }) => {
-        const zoom = camera.getState().ratio;
-        const expanded = zoom > ZOOM_THRESHOLD;
+const camera = renderer.getCamera();
 
-        graph.setNodeAttribute("theme4", "hidden", expanded);
+camera.on("updated", () => {
+  const zoom = camera.getState().ratio;
+  const expanded = zoom > ZOOM_THRESHOLD;
 
-        transportSubnodes.forEach((sub) => {
-          graph.setNodeAttribute(sub.id, "hidden", !expanded);
-          graph.setEdgeAttribute("theme4", sub.id, "hidden", !expanded);
-        });
-      });
+  graph.setNodeAttribute("theme4", "hidden", expanded);
+
+  transportSubnodes.forEach((sub) => {
+    graph.setNodeAttribute(sub.id, "hidden", !expanded);
+    graph.setEdgeAttribute("theme4", sub.id, "hidden", !expanded);
+  });
+});
     };
 
     void run();
