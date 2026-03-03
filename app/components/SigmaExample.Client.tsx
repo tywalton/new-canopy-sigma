@@ -253,6 +253,15 @@ function DocPanel({ selectedSubnode, onClose }) {
   );
 }
 
+// Inject clean Google Font for canvas labels
+if (typeof document !== "undefined" && !document.getElementById("sigma-font")) {
+  const link = document.createElement("link");
+  link.id = "sigma-font";
+  link.rel = "stylesheet";
+  link.href = "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap";
+  document.head.appendChild(link);
+}
+
 export default function SigmaExample({ ...rest }) {
   const containerRef = useRef(null);
   const [selectedSubnode, setSelectedSubnode] = useState(null);
@@ -313,7 +322,14 @@ export default function SigmaExample({ ...rest }) {
         themeState[theme.id] = { subnodes: subs, subEdgeKeys, expanded: false, mainEdgeKeys: [] };
       });
 
-      renderer = new Sigma(graph, containerRef.current, { renderEdgeLabels: false });
+      renderer = new Sigma(graph, containerRef.current, {
+        renderEdgeLabels: false,
+        labelFont: "DM Sans, sans-serif",
+        labelWeight: "500",
+        labelSize: 11,
+        labelColor: { color: "#1e293b" },
+        zoomToSizeRatioFunction: (x) => x,
+      });
 
       themes.forEach((theme) => {
         const state = themeState[theme.id];
