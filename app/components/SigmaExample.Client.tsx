@@ -33,38 +33,33 @@ export default function SigmaExample({...rest}) {
 
 // define colors 
 const themeColors = {
-  theme1: "#0ea5e9", // water
-  theme2: "#22c55e", // wildlife
-  theme3: "#f97316", // energy
-  theme4: "#6366f1", // transport
-  theme5: "#e11d48", // urban
-
-  theme6: "#38bdf8",  // climate & weather (sky / atmosphere)
-  theme7: "#64748b",  // industrial production (steel / materials)
-  theme8: "#a16207",  // place-based conflicts (land / earth)
-  theme9: "#0f766e",  // governance (institutions / stability)
-  theme10: "#7c3aed", // Indigenous narratives & sovereignty (heritage / power)
+  theme1: "#0ea5e9", 
+  theme2: "#22c55e", 
+  theme3: "#f97316", 
+  theme4: "#6366f1", 
+  theme5: "#e11d48", 
+  theme6: "#38bdf8",  
+  theme7: "#64748b",  
+  theme8: "#a16207", 
+  theme9: "#0f766e", 
+  theme10: "#7c3aed", 
 };
 
 const fixedPositions = {
-  theme1:  { x: -0.6, y:  0.4 },
-  theme2:  { x: -0.4, y:  0.7 },
-  theme6:  { x: -0.2, y:  0.4 },
-
-  theme3:  { x:  0.0, y:  0.1 },
-  theme4:  { x:  0.3, y:  0.3 },
-  theme7:  { x:  0.3, y: -0.1 },
-
-  theme5:  { x:  0.6, y:  0.2 },
-  theme9:  { x:  0.6, y: -0.2 },
-  theme8:  { x:  0.2, y: -0.4 },
-
-  theme10: { x: -0.3, y: -0.5 },
+        theme1: { x: -0.6, y: 0.4 },
+        theme2: { x: -0.4, y: 0.7 },
+        theme6: { x: -0.2, y: 0.4 },
+        theme3: { x: 0.0, y: 0.1 },
+        theme4: { x: 0.3, y: 0.3 },
+        theme7: { x: 0.3, y: -0.1 },
+        theme5: { x: 0.6, y: 0.2 },
+        theme9: { x: 0.6, y: -0.2 },
+        theme8: { x: 0.2, y: -0.4 },
+        theme10: { x: -0.3, y: -0.5 },
 };
 
-// add nodes  
 
-      
+// main nodes    
 themes.forEach((theme) => {
   if (!graph.hasNode(theme.id)) {
     graph.addNode(theme.id, {
@@ -77,7 +72,6 @@ themes.forEach((theme) => {
   }
 });
 
-
 // add edges 
 themes.forEach((themeA, i) => {
   themes.forEach((themeB, j) => {
@@ -89,12 +83,54 @@ themes.forEach((themeA, i) => {
     }
   });
 });
+
+// transportation subnodes
+      const transportSubnodes = [
+        { id: "theme4_road", label: "Road Transport" },
+        { id: "theme4_rail", label: "Rail Transport" },
+        { id: "theme4_air", label: "Air Transport" },
+      ];
+
+      const center = fixedPositions.theme4;
+
+      transportSubnodes.forEach((sub, i) => {
+        graph.addNode(sub.id, {
+          label: sub.label,
+          size: 10,
+          color: themeColors.theme4,
+          x: center.x + Math.cos((2 * Math.PI * i) / 3) * 0.08,
+          y: center.y + Math.sin((2 * Math.PI * i) / 3) * 0.08,
+          hidden: true,
+        });
+
+        graph.addEdge("theme4", sub.id, {
+          color: "#c7d2fe",
+          size: 1,
+          hidden: true,
+        });
+      });
       
-// create render 
-renderer = new Sigma(graph, containerRef.current, {
-  renderEdgeLabels: false,
-});
-};
+// create render
+      renderer = new Sigma(graph, containerRef.current, {
+        renderEdgeLabels: false,
+      });
+
+      // zoom toggle
+      const ZOOM_THRESHOLD = 1.6;
+
+      renderer.on("cameraUpdated", ({ camera }) => {
+        const zoom = camera.getState().ratio;
+        const expanded = zoom > ZOOM_THRESHOLD;
+
+        graph.setNodeAttribute("theme4", "hidden", expanded);
+
+        transportSubnodes.forEach((sub) => {
+          graph.setNodeAttribute(sub.id, "hidden", !expanded);
+          graph.setEdgeAttribute("theme4", sub.id, "hidden", !expanded);
+        });
+      });
+    };
+
     void run();
 
     return () => {
@@ -105,8 +141,11 @@ renderer = new Sigma(graph, containerRef.current, {
   return (
     <div
       ref={containerRef}
-      style={{width: "100%", minHeight: "400px", height: "100%"}}
+      style={{ width: "100%", minHeight: "400px", height: "100%" }}
       {...rest}
+    />
+  );
+}{...rest}
     />
   );
 }
