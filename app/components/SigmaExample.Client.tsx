@@ -112,10 +112,13 @@ export default function SigmaExample({ ...rest }) {
       renderer = new Sigma(graph, containerRef.current, {
         renderEdgeLabels: false,
         labelFont: "DM Sans, sans-serif",
-        labelWeight: "500",
-        labelSize: 11,
+        labelWeight: "600",
+        labelSize: 12,
         labelColor: { color: "#1e293b" },
+        labelBackgroundColor: "rgba(255,255,255,0.85)",
+        labelPadding: 3,
         zoomToSizeRatioFunction: (x) => x,
+        labelRenderedSizeThreshold: 1,
       });
 
       themes.forEach((theme) => {
