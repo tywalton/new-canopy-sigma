@@ -138,14 +138,11 @@ themes.forEach((themeA, i) => {
     };
   }, []);
 
-  return (
+return (
     <div
       ref={containerRef}
       style={{ width: "100%", minHeight: "400px", height: "100%" }}
       {...rest}
-    />
-  );
-}{...rest}
     />
   );
 }
