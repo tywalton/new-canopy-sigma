@@ -225,28 +225,68 @@ export default function SigmaExample({ ...rest }) {
         });
       });
 
-      renderer.on("clickNode", ({ node }) => {
-        // Find which theme this node belongs to
-        const theme = themes.find(
-          (t) => t.id === node || t.subnodes.some((s) => s.id === node)
-        );
-        if (!theme) return;
-
+      const expandTheme = (theme) => {
         const state = themeState[theme.id];
+        if (state.expanded) return;
+        state.expanded = true;
+        graph.setNodeAttribute(theme.id, "hidden", true);
+        state.mainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
+        state.subnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", false));
+        state.subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
+      };
 
-        if (!state.expanded) {
-          state.expanded = true;
-          graph.setNodeAttribute(theme.id, "hidden", true);
-          state.mainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
-          state.subnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", false));
-          state.subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
-        } else {
-          state.expanded = false;
-          graph.setNodeAttribute(theme.id, "hidden", false);
-          state.mainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
-          state.subnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", true));
-          state.subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
+      const collapseTheme = (theme) => {
+        const state = themeState[theme.id];
+        if (!state.expanded) return;
+        state.expanded = false;
+        graph.setNodeAttribute(theme.id, "hidden", false);
+        state.mainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
+        state.subnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", true));
+        state.subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
+      };
+
+      // EXPAND_ZOOM: camera ratio below this threshold = zoomed in enough to expand
+      // Sigma's ratio is inverted: smaller ratio = more zoomed in
+      const EXPAND_ZOOM_RATIO = 1 / 2.5;
+      // Max graph-coordinate distance from camera center to a node to trigger expand
+      const PROXIMITY = 0.35;
+
+      renderer.getCamera().on("updated", () => {
+        const camera = renderer.getCamera();
+        const { x: camX, y: camY, ratio } = camera.getState();
+
+        const zoomedIn = ratio < EXPAND_ZOOM_RATIO;
+
+        if (!zoomedIn) {
+          themes.forEach((theme) => collapseTheme(theme));
+          return;
         }
+
+        // Find the closest main theme node to camera center
+        let closest = null;
+        let closestDist = Infinity;
+
+        themes.forEach((theme) => {
+          const pos = fixedPositions[theme.id];
+          const dx = pos.x - camX;
+          const dy = pos.y - camY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closest = theme;
+          }
+        });
+
+        if (!closest || closestDist > PROXIMITY) {
+          themes.forEach((theme) => collapseTheme(theme));
+          return;
+        }
+
+        // Expand the closest node, collapse all others
+        themes.forEach((theme) => {
+          if (theme.id === closest.id) expandTheme(theme);
+          else collapseTheme(theme);
+        });
       });
     };
 
