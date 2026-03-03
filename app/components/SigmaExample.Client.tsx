@@ -3,6 +3,115 @@ import React, { useEffect, useRef } from "react";
 const GRAPH_CDN_URL = "https://esm.sh/graphology@0.25.4?bundle";
 const SIGMA_CDN_URL = "https://esm.sh/sigma@3.0.0?bundle";
 
+const themeColors = {
+  theme1: "#0ea5e9",
+  theme2: "#22c55e",
+  theme3: "#f97316",
+  theme4: "#6366f1",
+  theme5: "#e11d48",
+  theme6: "#38bdf8",
+  theme7: "#64748b",
+  theme8: "#a16207",
+  theme9: "#0f766e",
+  theme10: "#7c3aed",
+};
+
+const themes = [
+  {
+    id: "theme1", label: "Water Systems", count: 100,
+    subnodes: [
+      { id: "theme1_1", label: "Rivers & Streams" },
+      { id: "theme1_2", label: "Groundwater" },
+      { id: "theme1_3", label: "Wetlands" },
+    ],
+  },
+  {
+    id: "theme2", label: "Wildlife and Natural Areas", count: 120,
+    subnodes: [
+      { id: "theme2_1", label: "Protected Areas" },
+      { id: "theme2_2", label: "Endangered Species" },
+    ],
+  },
+  {
+    id: "theme3", label: "Energy Systems", count: 130,
+    subnodes: [
+      { id: "theme3_1", label: "Renewables" },
+      { id: "theme3_2", label: "Fossil Fuels" },
+      { id: "theme3_3", label: "Nuclear" },
+      { id: "theme3_4", label: "Grid Infrastructure" },
+    ],
+  },
+  {
+    id: "theme4", label: "Transportation Infrastructure", count: 140,
+    subnodes: [
+      { id: "theme4_1", label: "Road Transport" },
+      { id: "theme4_2", label: "Rail Transport" },
+      { id: "theme4_3", label: "Air Transport" },
+    ],
+  },
+  {
+    id: "theme5", label: "Urban Development", count: 150,
+    subnodes: [
+      { id: "theme5_1", label: "Housing" },
+      { id: "theme5_2", label: "Zoning" },
+    ],
+  },
+  {
+    id: "theme6", label: "Climate and Weather Modification", count: 130,
+    subnodes: [
+      { id: "theme6_1", label: "Emissions" },
+      { id: "theme6_2", label: "Geoengineering" },
+      { id: "theme6_3", label: "Extreme Events" },
+      { id: "theme6_4", label: "Carbon Sinks" },
+    ],
+  },
+  {
+    id: "theme7", label: "Industrial Production and Materials", count: 130,
+    subnodes: [
+      { id: "theme7_1", label: "Mining" },
+      { id: "theme7_2", label: "Manufacturing" },
+      { id: "theme7_3", label: "Waste" },
+    ],
+  },
+  {
+    id: "theme8", label: "Place Based Development Conflicts", count: 130,
+    subnodes: [
+      { id: "theme8_1", label: "Land Use" },
+      { id: "theme8_2", label: "Resource Rights" },
+    ],
+  },
+  {
+    id: "theme9", label: "Governance and Institutional Control", count: 150,
+    subnodes: [
+      { id: "theme9_1", label: "Federal Policy" },
+      { id: "theme9_2", label: "Local Policy" },
+      { id: "theme9_3", label: "International Agreements" },
+      { id: "theme9_4", label: "Enforcement" },
+    ],
+  },
+  {
+    id: "theme10", label: "Indigenous Narratives and Sovereignty", count: 130,
+    subnodes: [
+      { id: "theme10_1", label: "Land Rights" },
+      { id: "theme10_2", label: "Cultural Preservation" },
+      { id: "theme10_3", label: "Self-Governance" },
+    ],
+  },
+];
+
+const fixedPositions = {
+  theme1:  { x: -0.6, y:  0.4 },
+  theme2:  { x: -0.4, y:  0.7 },
+  theme6:  { x: -0.2, y:  0.4 },
+  theme3:  { x:  0.0, y:  0.1 },
+  theme4:  { x:  0.3, y:  0.3 },
+  theme7:  { x:  0.3, y: -0.1 },
+  theme5:  { x:  0.6, y:  0.2 },
+  theme9:  { x:  0.6, y: -0.2 },
+  theme8:  { x:  0.2, y: -0.4 },
+  theme10: { x: -0.3, y: -0.5 },
+};
+
 export default function SigmaExample({ ...rest }) {
   const containerRef = useRef(null);
 
@@ -15,48 +124,9 @@ export default function SigmaExample({ ...rest }) {
       const { default: Graph } = await import(GRAPH_CDN_URL);
       const { default: Sigma } = await import(SIGMA_CDN_URL);
 
-      const themes = [
-        { id: "theme1", label: "Water Systems", count: 100 },
-        { id: "theme2", label: "Wildlife and Natural Areas", count: 120 },
-        { id: "theme3", label: "Energy Systems", count: 130 },
-        { id: "theme4", label: "Transportation Infrastructure", count: 140 },
-        { id: "theme5", label: "Urban Development", count: 150 },
-        { id: "theme6", label: "Climate and Weather Modification", count: 130 },
-        { id: "theme7", label: "Industrial Production and Materials", count: 130 },
-        { id: "theme8", label: "Place Based Development Conflicts", count: 130 },
-        { id: "theme9", label: "Governance and Institutional Control", count: 150 },
-        { id: "theme10", label: "Indigenous Narratives and Sovereignty", count: 130 },
-      ];
-
-      const themeColors = {
-        theme1: "#0ea5e9",
-        theme2: "#22c55e",
-        theme3: "#f97316",
-        theme4: "#6366f1",
-        theme5: "#e11d48",
-        theme6: "#38bdf8",
-        theme7: "#64748b",
-        theme8: "#a16207",
-        theme9: "#0f766e",
-        theme10: "#7c3aed",
-      };
-
-      const fixedPositions = {
-        theme1: { x: -0.6, y: 0.4 },
-        theme2: { x: -0.4, y: 0.7 },
-        theme6: { x: -0.2, y: 0.4 },
-        theme3: { x: 0.0, y: 0.1 },
-        theme4: { x: 0.3, y: 0.3 },
-        theme7: { x: 0.3, y: -0.1 },
-        theme5: { x: 0.6, y: 0.2 },
-        theme9: { x: 0.6, y: -0.2 },
-        theme8: { x: 0.2, y: -0.4 },
-        theme10: { x: -0.3, y: -0.5 },
-      };
-
       const graph = new Graph();
 
-      // Main nodes
+      // Add main theme nodes
       themes.forEach((theme) => {
         graph.addNode(theme.id, {
           label: theme.label,
@@ -67,7 +137,7 @@ export default function SigmaExample({ ...rest }) {
         });
       });
 
-      // Edges between main nodes
+      // Add edges between all main nodes
       themes.forEach((themeA, i) => {
         themes.forEach((themeB, j) => {
           if (i < j) {
@@ -79,93 +149,103 @@ export default function SigmaExample({ ...rest }) {
         });
       });
 
-      // Transportation subnodes
-      const transportSubnodes = [
-        { id: "theme4_road", label: "Road Transport" },
-        { id: "theme4_rail", label: "Rail Transport" },
-        { id: "theme4_air", label: "Air Transport" },
-      ];
+      // Per-theme state
+      const themeState = {};
 
-      const center = fixedPositions.theme4;
+      themes.forEach((theme) => {
+        const center = fixedPositions[theme.id];
+        const subs = theme.subnodes;
+        const subEdgeKeys = [];
 
-      // Track subnode edge keys so we can hide/show them reliably
-      const subEdgeKeys = [];
+        // Add subnode graph nodes
+        subs.forEach((sub, i) => {
+          graph.addNode(sub.id, {
+            label: sub.label,
+            size: 8,
+            color: themeColors[theme.id],
+            x: center.x + Math.cos((2 * Math.PI * i) / subs.length) * 0.12,
+            y: center.y + Math.sin((2 * Math.PI * i) / subs.length) * 0.12,
+            hidden: true,
+          });
 
-      transportSubnodes.forEach((sub, i) => {
-        graph.addNode(sub.id, {
-          label: sub.label,
-          size: 10,
-          color: themeColors.theme4,
-          x: center.x + Math.cos((2 * Math.PI * i) / 3) * 0.12,
-          y: center.y + Math.sin((2 * Math.PI * i) / 3) * 0.12,
-          hidden: true,
+          // Edge: parent → subnode
+          const parentEdgeKey = graph.addEdge(theme.id, sub.id, {
+            color: themeColors[theme.id],
+            size: 1.5,
+            hidden: true,
+          });
+          subEdgeKeys.push(parentEdgeKey);
+
+          // Edges: subnode → all other theme nodes
+          themes.forEach((other) => {
+            if (other.id !== theme.id) {
+              const key = graph.addEdge(sub.id, other.id, {
+                color: "#d1d5db",
+                size: 1,
+                hidden: true,
+              });
+              subEdgeKeys.push(key);
+            }
+          });
         });
 
-        // Edge from theme4 parent to each subnode
-        const edgeKey = graph.addEdge("theme4", sub.id, {
-          color: "#6366f1",
-          size: 1,
-          hidden: true,
+        // Edges between subnodes themselves
+        subs.forEach((subA, i) => {
+          subs.forEach((subB, j) => {
+            if (i < j) {
+              const key = graph.addEdge(subA.id, subB.id, {
+                color: themeColors[theme.id],
+                size: 1,
+                hidden: true,
+              });
+              subEdgeKeys.push(key);
+            }
+          });
         });
-        subEdgeKeys.push(edgeKey);
 
-        // Edges from each subnode to all other theme nodes (replacing theme4's connections)
-        themes.forEach((theme) => {
-          if (theme.id !== "theme4") {
-            const key = graph.addEdge(sub.id, theme.id, {
-              color: "#d1d5db",
-              size: 1,
-              hidden: true,
-            });
-            subEdgeKeys.push(key);
-          }
-        });
-      });
-
-      // Edges between subnodes themselves
-      transportSubnodes.forEach((subA, i) => {
-        transportSubnodes.forEach((subB, j) => {
-          if (i < j) {
-            const key = graph.addEdge(subA.id, subB.id, {
-              color: "#6366f1",
-              size: 1,
-              hidden: true,
-            });
-            subEdgeKeys.push(key);
-          }
-        });
+        themeState[theme.id] = {
+          subnodes: subs,
+          subEdgeKeys,
+          expanded: false,
+          mainEdgeKeys: [],
+        };
       });
 
       renderer = new Sigma(graph, containerRef.current, {
         renderEdgeLabels: false,
       });
 
-      // Collect edges connecting theme4 to other theme nodes (not subnodes)
-      const theme4MainEdgeKeys = graph.edges("theme4").filter((key) => {
-        const target = graph.opposite("theme4", key);
-        return !transportSubnodes.some((s) => s.id === target);
+      // Collect each theme's main edges after renderer is created
+      themes.forEach((theme) => {
+        const state = themeState[theme.id];
+        const subIds = new Set(state.subnodes.map((s) => s.id));
+        state.mainEdgeKeys = graph.edges(theme.id).filter((key) => {
+          const neighbor = graph.opposite(theme.id, key);
+          return !subIds.has(neighbor);
+        });
       });
 
-      let transportExpanded = false;
-
       renderer.on("clickNode", ({ node }) => {
-        const isTransportNode = node === "theme4" || transportSubnodes.some((s) => s.id === node);
-        if (!isTransportNode) return;
+        // Find which theme this node belongs to
+        const theme = themes.find(
+          (t) => t.id === node || t.subnodes.some((s) => s.id === node)
+        );
+        if (!theme) return;
 
-        if (!transportExpanded) {
-          // Expand: hide parent node + its main edges, show subnodes + sub edges
-          transportExpanded = true;
-          graph.setNodeAttribute("theme4", "hidden", true);
-          theme4MainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
-          transportSubnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", false));
-          subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
+        const state = themeState[theme.id];
+
+        if (!state.expanded) {
+          state.expanded = true;
+          graph.setNodeAttribute(theme.id, "hidden", true);
+          state.mainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
+          state.subnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", false));
+          state.subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
         } else {
-          // Collapse: restore parent node + its main edges, hide subnodes + sub edges
-          transportExpanded = false;
-          graph.setNodeAttribute("theme4", "hidden", false);
-          theme4MainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
-          transportSubnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", true));
-          subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
+          state.expanded = false;
+          graph.setNodeAttribute(theme.id, "hidden", false);
+          state.mainEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", false));
+          state.subnodes.forEach((sub) => graph.setNodeAttribute(sub.id, "hidden", true));
+          state.subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
         }
       });
     };
