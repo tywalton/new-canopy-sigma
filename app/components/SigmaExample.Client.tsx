@@ -139,7 +139,7 @@ renderer.on("clickNode", ({ node }) => {
       graph.setNodeAttribute(sub.id, "hidden", true);
       graph.setEdgeAttribute("theme4", sub.id, "hidden", true);
     });
-      renderer.refresh();
+
   }
 });
 
