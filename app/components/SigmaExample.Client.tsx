@@ -4,16 +4,16 @@ const GRAPH_CDN_URL = "https://esm.sh/graphology@0.25.4?bundle";
 const SIGMA_CDN_URL = "https://esm.sh/sigma@3.0.0?bundle";
 
 const themeColors = {
-  theme1: "#0ea5e9",
-  theme2: "#22c55e",
-  theme3: "#f97316",
-  theme4: "#6366f1",
-  theme5: "#e11d48",
-  theme6: "#38bdf8",
-  theme7: "#64748b",
-  theme8: "#a16207",
-  theme9: "#0f766e",
-  theme10: "#7c3aed",
+  theme1:  "#3b82f6", // Water Systems — clear blue
+  theme2:  "#16a34a", // Wildlife and Natural Areas — forest green
+  theme3:  "#f59e0b", // Energy Systems — amber/solar
+  theme4:  "#94a3b8", // Transportation Infrastructure — asphalt grey
+  theme5:  "#f97316", // Urban Development — urban orange
+  theme6:  "#7dd3fc", // Climate and Weather Modification — sky blue
+  theme7:  "#78716c", // Industrial Production and Materials — industrial brown-grey
+  theme8:  "#b45309", // Place Based Development Conflicts — earthy ochre
+  theme9:  "#1d4ed8", // Governance and Institutional Control — institutional navy
+  theme10: "#a21caf", // Indigenous Narratives and Sovereignty — deep violet
 };
 
 const themes = [
@@ -30,8 +30,8 @@ const themes = [
 ];
 
 const fixedPositions = {
-  theme1:  { x: -0.4, y:  0.3 },
-  theme2:  { x: -0.8, y: -0.1 },
+  theme1:  { x: -0.6, y:  0.4 },
+  theme2:  { x: -0.4, y:  0.7 },
   theme6:  { x: -0.2, y:  0.4 },
   theme3:  { x:  0.0, y:  0.1 },
   theme4:  { x:  0.3, y:  0.3 },
@@ -128,8 +128,8 @@ export default function SigmaExample({ ...rest }) {
         state.mainEdgeKeys = graph.edges(theme.id).filter((key) => !subIds.has(graph.opposite(theme.id, key)));
       });
 
-      const FADED_NODE_COLOR = "#cbd5e1";
-      const FADED_EDGE_COLOR = "#e2e8f0";
+      const FADED_NODE_COLOR = "#d1d5db";
+      const FADED_EDGE_COLOR = "#e5e7eb";
       const FADED_NODE_SIZE_FACTOR = 0.85;
 
       const originalNodeAttrs = {};
