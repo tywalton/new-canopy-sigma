@@ -225,6 +225,102 @@ export default function SigmaExample({ ...rest }) {
         });
       });
 
+      const FADED_NODE_COLOR = "#e2e8f0";
+      const FADED_EDGE_COLOR = "#e2e8f0";
+      const FADED_NODE_SIZE_FACTOR = 0.6;
+
+      // Store original node/edge attributes for restoration
+      const originalNodeAttrs = {};
+      themes.forEach((theme) => {
+        originalNodeAttrs[theme.id] = {
+          color: themeColors[theme.id],
+          size: Math.sqrt(theme.count) * 2,
+        };
+        theme.subnodes.forEach((sub) => {
+          originalNodeAttrs[sub.id] = { color: themeColors[theme.id], size: 8 };
+        });
+      });
+
+      const originalEdgeAttrs = {};
+      graph.edges().forEach((key) => {
+        originalEdgeAttrs[key] = {
+          color: graph.getEdgeAttribute(key, "color"),
+          size: graph.getEdgeAttribute(key, "size"),
+        };
+      });
+
+      const resetAllVisuals = () => {
+        themes.forEach((theme) => {
+          const a = originalNodeAttrs[theme.id];
+          graph.setNodeAttribute(theme.id, "color", a.color);
+          graph.setNodeAttribute(theme.id, "size", a.size);
+          theme.subnodes.forEach((sub) => {
+            const sa = originalNodeAttrs[sub.id];
+            graph.setNodeAttribute(sub.id, "color", sa.color);
+            graph.setNodeAttribute(sub.id, "size", sa.size);
+          });
+        });
+        graph.edges().forEach((key) => {
+          const ea = originalEdgeAttrs[key];
+          graph.setEdgeAttribute(key, "color", ea.color);
+          graph.setEdgeAttribute(key, "size", ea.size);
+        });
+      };
+
+      const applyFocusVisuals = (focusedTheme) => {
+        const focusedState = themeState[focusedTheme.id];
+
+        // The active nodes: subnodes if expanded, else the parent
+        const activeNodeIds = new Set(
+          focusedState.expanded
+            ? focusedState.subnodes.map((s) => s.id)
+            : [focusedTheme.id]
+        );
+
+        // Active edges: edges connected to any active node, that are visible
+        const activeEdgeKeys = new Set();
+        activeNodeIds.forEach((nodeId) => {
+          graph.edges(nodeId).forEach((key) => {
+            if (!graph.getEdgeAttribute(key, "hidden")) {
+              activeEdgeKeys.add(key);
+            }
+          });
+        });
+
+        // Fade all nodes
+        themes.forEach((theme) => {
+          if (!activeNodeIds.has(theme.id)) {
+            graph.setNodeAttribute(theme.id, "color", FADED_NODE_COLOR);
+            graph.setNodeAttribute(
+              theme.id, "size",
+              originalNodeAttrs[theme.id].size * FADED_NODE_SIZE_FACTOR
+            );
+          }
+          theme.subnodes.forEach((sub) => {
+            if (!activeNodeIds.has(sub.id)) {
+              graph.setNodeAttribute(sub.id, "color", FADED_NODE_COLOR);
+              graph.setNodeAttribute(
+                sub.id, "size",
+                originalNodeAttrs[sub.id].size * FADED_NODE_SIZE_FACTOR
+              );
+            }
+          });
+        });
+
+        // Fade all edges, then highlight active ones
+        graph.edges().forEach((key) => {
+          if (graph.getEdgeAttribute(key, "hidden")) return;
+          if (activeEdgeKeys.has(key)) {
+            // Highlight: use theme color and thicker size
+            graph.setEdgeAttribute(key, "color", themeColors[focusedTheme.id]);
+            graph.setEdgeAttribute(key, "size", 3);
+          } else {
+            graph.setEdgeAttribute(key, "color", FADED_EDGE_COLOR);
+            graph.setEdgeAttribute(key, "size", 0.5);
+          }
+        });
+      };
+
       const expandTheme = (theme) => {
         const state = themeState[theme.id];
         if (state.expanded) return;
@@ -245,24 +341,20 @@ export default function SigmaExample({ ...rest }) {
         state.subEdgeKeys.forEach((key) => graph.setEdgeAttribute(key, "hidden", true));
       };
 
-      // EXPAND_ZOOM: camera ratio below this threshold = zoomed in enough to expand
-      // Sigma's ratio is inverted: smaller ratio = more zoomed in
       const EXPAND_ZOOM_RATIO = 1 / 2.5;
-      // Max graph-coordinate distance from camera center to a node to trigger expand
       const PROXIMITY = 0.35;
 
       renderer.getCamera().on("updated", () => {
         const camera = renderer.getCamera();
         const { ratio } = camera.getState();
-
         const zoomedIn = ratio < EXPAND_ZOOM_RATIO;
 
         if (!zoomedIn) {
           themes.forEach((theme) => collapseTheme(theme));
+          resetAllVisuals();
           return;
         }
 
-        // Convert the viewport center to graph coordinates
         const containerWidth = containerRef.current.offsetWidth;
         const containerHeight = containerRef.current.offsetHeight;
         const graphCenter = renderer.viewportToGraph({
@@ -270,10 +362,8 @@ export default function SigmaExample({ ...rest }) {
           y: containerHeight / 2,
         });
 
-        // Find the closest main theme node to the graph-space center
         let closest = null;
         let closestDist = Infinity;
-
         themes.forEach((theme) => {
           const pos = fixedPositions[theme.id];
           const dx = pos.x - graphCenter.x;
@@ -287,14 +377,17 @@ export default function SigmaExample({ ...rest }) {
 
         if (!closest || closestDist > PROXIMITY) {
           themes.forEach((theme) => collapseTheme(theme));
+          resetAllVisuals();
           return;
         }
 
-        // Expand the closest node, collapse all others
         themes.forEach((theme) => {
           if (theme.id === closest.id) expandTheme(theme);
           else collapseTheme(theme);
         });
+
+        resetAllVisuals();
+        applyFocusVisuals(closest);
       });
     };
 
