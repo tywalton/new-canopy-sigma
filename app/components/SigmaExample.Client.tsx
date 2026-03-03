@@ -225,9 +225,9 @@ export default function SigmaExample({ ...rest }) {
         });
       });
 
-      const FADED_NODE_COLOR = "#e2e8f0";
+      const FADED_NODE_COLOR = "#cbd5e1";
       const FADED_EDGE_COLOR = "#e2e8f0";
-      const FADED_NODE_SIZE_FACTOR = 0.6;
+      const FADED_NODE_SIZE_FACTOR = 0.85;
 
       // Store original node/edge attributes for restoration
       const originalNodeAttrs = {};
@@ -312,8 +312,9 @@ export default function SigmaExample({ ...rest }) {
           if (graph.getEdgeAttribute(key, "hidden")) return;
           if (activeEdgeKeys.has(key)) {
             // Highlight: use theme color and thicker size
-            graph.setEdgeAttribute(key, "color", themeColors[focusedTheme.id]);
-            graph.setEdgeAttribute(key, "size", 3);
+            // Soften: slightly lighter version of theme color at modest width
+            graph.setEdgeAttribute(key, "color", themeColors[focusedTheme.id] + "99");
+            graph.setEdgeAttribute(key, "size", 1.8);
           } else {
             graph.setEdgeAttribute(key, "color", FADED_EDGE_COLOR);
             graph.setEdgeAttribute(key, "size", 0.5);
