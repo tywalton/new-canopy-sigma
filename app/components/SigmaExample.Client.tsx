@@ -113,12 +113,13 @@ export default function SigmaExample({ ...rest }) {
         renderEdgeLabels: false,
         labelFont: "DM Sans, sans-serif",
         labelWeight: "600",
-        labelSize: 12,
         labelColor: { color: "#1e293b" },
         labelBackgroundColor: "rgba(255,255,255,0.85)",
-        labelPadding: 3,
-        zoomToSizeRatioFunction: (x) => x,
+        labelPadding: 4,
         labelRenderedSizeThreshold: 1,
+        // Scale label size with zoom: bigger as you zoom in
+        labelSizeRatio: 3,
+        zoomToSizeRatioFunction: (x) => x,
       });
 
       themes.forEach((theme) => {
