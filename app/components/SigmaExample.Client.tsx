@@ -336,8 +336,17 @@ function LoadingOverlay({ progress, total }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+// Scale doc count → node size (sqrt scaling, clamped)
+function docCountToSize(count) {
+  const MIN = 12, MAX = 38;
+  if (count <= 0) return MIN;
+  return Math.min(MAX, Math.max(MIN, Math.sqrt(count) * 7));
+}
+
 export default function SigmaExample({ ...rest }) {
   const containerRef = useRef(null);
+  const graphRef = useRef(null);            // graphology Graph instance
+  const originalNodeAttrsRef = useRef({}); // shared so camera handler stays in sync
   const [selectedTheme, setSelectedTheme] = useState(null);
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -400,6 +409,29 @@ export default function SigmaExample({ ...rest }) {
     return () => { cancelled = true; };
   }, []);
 
+  // Once docs load, resize theme nodes by document count
+  useEffect(() => {
+    if (loading || docs.length === 0 || !graphRef.current) return;
+    const graph = graphRef.current;
+    const originalNodeAttrs = originalNodeAttrsRef.current;
+
+    themes.forEach((theme) => {
+      const count = docs.filter((d) =>
+        d.themes.some((t) => t.toLowerCase() === theme.label.toLowerCase())
+      ).length;
+      const size = docCountToSize(count);
+
+      // Update the live graph node
+      if (graph.hasNode(theme.id)) {
+        graph.setNodeAttribute(theme.id, "size", size);
+      }
+      // Keep originalNodeAttrs in sync so focus/fade logic uses the right base size
+      if (originalNodeAttrs[theme.id]) {
+        originalNodeAttrs[theme.id].size = size;
+      }
+    });
+  }, [docs, loading]);
+
   // Build the Sigma graph
   useEffect(() => {
     if (!containerRef.current) return;
@@ -410,11 +442,12 @@ export default function SigmaExample({ ...rest }) {
       const { default: Sigma } = await import(SIGMA_CDN_URL);
 
       const graph = new Graph();
+      graphRef.current = graph;
 
       themes.forEach((theme) => {
         graph.addNode(theme.id, {
           label: theme.label,
-          size: 20,
+          size: 20, // placeholder — updated after docs load
           color: themeColors[theme.id],
           x: fixedPositions[theme.id].x,
           y: fixedPositions[theme.id].y,
@@ -479,7 +512,7 @@ export default function SigmaExample({ ...rest }) {
       const FADED_EDGE_COLOR = "#e5e7eb";
       const FADED_NODE_SIZE_FACTOR = 0.85;
 
-      const originalNodeAttrs = {};
+      const originalNodeAttrs = originalNodeAttrsRef.current;
       themes.forEach((theme) => {
         originalNodeAttrs[theme.id] = { color: themeColors[theme.id], size: 20 };
         theme.subnodes.forEach((sub) => { originalNodeAttrs[sub.id] = { color: themeColors[theme.id], size: 8 }; });
