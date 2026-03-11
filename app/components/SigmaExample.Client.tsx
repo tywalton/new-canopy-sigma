@@ -5,6 +5,15 @@ const SIGMA_CDN_URL = "https://esm.sh/sigma@3.0.0?bundle";
 const COLLECTION_URL =
   "https://raw.githubusercontent.com/gracegormley-gkg/canumpy-/main/collection.json";
 
+// ← Set this to your Canopy site's base URL (no trailing slash)
+const CANOPY_BASE_URL = "";
+
+// Derive Canopy /works/[slug] from a manifest URL
+function manifestToCanopyUrl(manifestId) {
+  const filename = manifestId.split("/").pop().replace(/\.json$/, "");
+  return `${CANOPY_BASE_URL}/works/${filename}`;
+}
+
 const themeColors = {
   theme1:  "#3b82f6",
   theme2:  "#16a34a",
@@ -181,7 +190,7 @@ function DocPanel({ theme, docs, onClose }) {
           filtered.map((doc) => (
             <a
               key={doc.id}
-              href={doc.homepage ?? "#"}
+              href={manifestToCanopyUrl(doc.id)}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -258,7 +267,7 @@ function DocPanel({ theme, docs, onClose }) {
                     fontWeight: 500,
                   }}
                 >
-                  View in collection →
+                  Open on site →
                 </div>
               </div>
             </a>
