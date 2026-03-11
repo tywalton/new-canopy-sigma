@@ -5,13 +5,13 @@ const SIGMA_CDN_URL = "https://esm.sh/sigma@3.0.0?bundle";
 const COLLECTION_URL =
   "https://raw.githubusercontent.com/gracegormley-gkg/canumpy-/main/collection.json";
 
-// ← Set this to your Canopy site's base URL (no trailing slash)
-const CANOPY_BASE_URL = "";
+const CANOPY_BASE_URL = "https://tywalton.github.io/new-canopy-sigma";
 
-// Derive Canopy /works/[slug] from a manifest URL
+// Canopy truncates slugs to 50 chars and appends .html
 function manifestToCanopyUrl(manifestId) {
   const filename = manifestId.split("/").pop().replace(/\.json$/, "");
-  return `${CANOPY_BASE_URL}/works/${filename}`;
+  const slug = filename.slice(0, 50);
+  return `${CANOPY_BASE_URL}/works/${slug}.html`;
 }
 
 const themeColors = {
